@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageReceived;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Message;
@@ -41,16 +42,14 @@ class MetaWebhookController extends Controller
             $recipientId = $messageData['recipient']['id'] ?? null;
             $text = $messageData['message']['text'] ?? null;
 
-            Message::create([
+            $message = Message::create([
                 'sender_id' => $senderId,
                 'recipient_id' => $recipientId,
                 'message_text' => $text,
                 'raw_payload' => json_encode($messageData), // ✅ Convert array to string
             ]);
 
-            Log::info("✅ Message stored in database!");
-            // ✅ Auto-reply when user sends message
-            $fb->sendMessage($senderId, "Hi! Thanks for your message. We'll get back to you shortly Moda dave.");
+            broadcast(new MessageReceived($message));
 
             Log::info("✅ Message sent to user!");
         }
