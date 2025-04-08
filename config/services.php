@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'facebook' => [
+        'page_token' => env('FB_PAGE_TOKEN'),
+        'graph_url' => 'https://graph.facebook.com/v19.0/me/messages',
+    ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
